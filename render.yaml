@@ -2,6 +2,7 @@ services:
   - type: web
     name: furniture-api
     runtime: python
+    branch: master
     buildCommand: |
       pip install --upgrade torch ultralytics
       pip install -r requirements.txt
