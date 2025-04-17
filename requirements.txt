@@ -1,9 +1,0 @@
-Flask
-numpy
-opencv-python
-matplotlib
-ultralytics
-scikit-learn
-pyyaml
-pandas
-gdown
