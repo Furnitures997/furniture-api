@@ -18,6 +18,7 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics.pairwise import cosine_similarity
 from ultralytics import YOLO
+import psutil
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -30,6 +31,9 @@ MODEL_PATH = os.path.join(BASE_DIR, "models", "best.pt")          # Path to YOLO
 DATASET_PATH = os.path.join(BASE_DIR, "data")                        # Dataset folder
 YAML_PATH = os.path.join(DATASET_PATH, "data.yaml")                   # YOLO config
 CSV_PATH = os.path.join(DATASET_PATH, "Updated_furniture_recommendation_dataset.csv") # Recommendation data
+
+import torch
+torch.set_num_threads(1)
 
 # Load the YOLO model
 from torch.serialization import add_safe_globals
@@ -144,6 +148,8 @@ def next_recommendation():
 @app.route('/objectdetection', methods=['POST'])
 def predict():
     print("Request Sent.")
+    process = psutil.Process(os.getpid())
+    print("Memory before:", process.memory_info().rss / 1024 / 1024, "MB")
     if 'file' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -151,7 +157,8 @@ def predict():
     print("File Uploaded.")
     image_bytes = file.read()
     image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
-    results = model.predict(image)
+    results = model.predict(image, save=False, device='cpu')
+    print("Memory after:", process.memory_info().rss / 1024 / 1024, "MB")
     print(results)
     boxes = results[0].boxes.xyxy.cpu().numpy()
     class_ids = results[0].boxes.cls.cpu().numpy()
