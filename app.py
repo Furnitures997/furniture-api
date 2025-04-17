@@ -36,7 +36,9 @@ from torch.serialization import add_safe_globals
 from ultralytics.nn.tasks import DetectionModel
 add_safe_globals([DetectionModel])  # Whitelist YOLO's model class
 
+print("Loading Model.")
 model = YOLO(MODEL_PATH)
+print("Model loaded successfully.")
 
 # Load class labels from YAML
 with open(YAML_PATH, 'r') as f:
@@ -141,17 +143,20 @@ def next_recommendation():
 
 @app.route('/objectdetection', methods=['POST'])
 def predict():
+    print("Request Sent.")
     if 'file' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
     file = request.files['file']
+    print("File Uploaded.")
     image_bytes = file.read()
     image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
     results = model.predict(image)
-
+    print(results)
     boxes = results[0].boxes.xyxy.cpu().numpy()
     class_ids = results[0].boxes.cls.cpu().numpy()
     class_names = results[0].names
+    print(class_names)
     extracted_objects = []
 
     for box, class_id in zip(boxes, class_ids):
