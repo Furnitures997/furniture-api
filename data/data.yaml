@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 6
+names: ['Chair', 'Lamp', 'Sofa', 'Table', 'tv', 'window']
+
+roboflow:
+  workspace: furniture-ss7bu
+  project: furniture-finder-qnw4i-wl86g
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/furniture-ss7bu/furniture-finder-qnw4i-wl86g/dataset/2

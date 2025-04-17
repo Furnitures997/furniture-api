@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: furniture-api
+    runtime: python
+    buildCommand: |
+      pip install --upgrade torch ultralytics
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true  # Render will auto-generate a secure key
+      - key: PYTHON_VERSION
+        value: 3.9.7  # Match your Python version
