@@ -101,7 +101,10 @@ def get_similar_images(labels, top_n=10):
     return similar_images[:top_n]
 
 def get_recommendations(user_input, top_n=5):
-    user_df = pd.DataFrame([user_input])
+    user_input_with_defaults = user_input.copy()
+    user_input_with_defaults["Room Size"] = "More than 20 sqm"  # Set a constant value
+    user_input_with_defaults["Dimension Constraints"] = "No"  # Set a constant value
+    user_df = pd.DataFrame([user_input_with_defaults])
     user_encoded = encoder.transform(user_df[feature_columns])
     user_similarities = cosine_similarity(user_encoded, encoded_features)
     top_indices = user_similarities.argsort()[0][-top_n:][::-1]
@@ -116,8 +119,6 @@ def recommend():
         "Primary Purpose": data.get("Primary_Purpose"),
         "Design Style": data.get("Design_Style"),
         "Furniture Type": data.get("Furniture_Type"),
-        "Room Size": data.get("Room_Size"),
-        "Dimension Constraints": data.get("Dimension_Constraints"),
         "Budget": data.get("Budget"),
         "Storage Needs": data.get("Storage_Needs"),
     }
