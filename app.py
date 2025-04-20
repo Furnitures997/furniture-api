@@ -104,6 +104,7 @@ def get_recommendations(user_input, top_n=5):
     user_input_with_defaults = user_input.copy()
     user_input_with_defaults["Room Size"] = "More than 20 sqm"  # Set a constant value
     user_input_with_defaults["Dimension Constraints"] = "No"  # Set a constant value
+    user_input_with_defaults["Primary Purpose"]= "Sleep"
     user_df = pd.DataFrame([user_input_with_defaults])
     user_encoded = encoder.transform(user_df[feature_columns])
     user_similarities = cosine_similarity(user_encoded, encoded_features)
@@ -116,7 +117,6 @@ def get_recommendations(user_input, top_n=5):
 def recommend():
     data = request.json
     user_preferences = {
-        "Primary Purpose": data.get("Primary_Purpose"),
         "Design Style": data.get("Design_Style"),
         "Furniture Type": data.get("Furniture_Type"),
         "Budget": data.get("Budget"),
